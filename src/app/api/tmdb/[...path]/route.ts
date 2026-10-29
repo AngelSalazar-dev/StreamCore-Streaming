@@ -91,9 +91,9 @@ export const GET = async (request: NextRequest, ctx: RouteContext<"/api/tmdb/[..
   if (!params) {
     return Response.json({ success: false, status_message: "Invalid parameters" }, { status: 400 });
   }
+  params.set("api_key", env.TMDB_API_KEY);
 
   const upstream = await fetch(`${TMDB_BASE_URL}/${endpoint}?${params}`, {
-    headers: { Authorization: `Bearer ${env.TMDB_ACCESS_TOKEN}` },
     cache: "no-store",
   });
 

@@ -35,7 +35,7 @@ npm install
 cp .env.local.example .env.local
 ```
 
-You need a [TMDB access token](https://www.themoviedb.org/settings/api) and a [Supabase](https://supabase.com) project (URL + publishable/service keys). See `supabase/config.toml` and run the local stack with the `sb-*` scripts if you prefer self-hosting.
+You need a TMDB API Key (free, from [TMDB](https://www.themoviedb.org/settings/api) → Settings → API) and a [Supabase](https://supabase.com) project (URL + publishable/service keys). See `supabase/config.toml` and run the local stack with the `sb-*` scripts if you prefer self-hosting.
 
 3. Start the development server:
 

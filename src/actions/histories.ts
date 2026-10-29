@@ -1,11 +1,17 @@
 "use server";
 
-import { tmdb } from "@/api/tmdb";
+import { env } from "@/utils/env";
 import { UnifiedPlayerEventData } from "@/hooks/usePlayerEvents";
 import { ActionResponse } from "@/types";
 import { HistoryDetail } from "@/types/movie";
 import { mutateMovieTitle, mutateTvShowTitle } from "@/utils/movies";
 import { createClient } from "@/utils/supabase/server";
+
+const fetchTMDB = async (path: string) => {
+  const res = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${env.TMDB_API_KEY}`);
+  if (!res.ok) throw new Error(`TMDB ${res.status}`);
+  return res.json();
+};
 
 export const syncHistory = async (
   data: UnifiedPlayerEventData,
@@ -51,10 +57,7 @@ export const syncHistory = async (
       };
     }
 
-    const media =
-      data.mediaType === "movie"
-        ? await tmdb.movies.details(Number(data.mediaId))
-        : await tmdb.tvShows.details(Number(data.mediaId));
+    const media = await fetchTMDB(`${data.mediaType}/${Number(data.mediaId)}`);
 
     // Insert or update history
     const { data: history, error } = await supabase
