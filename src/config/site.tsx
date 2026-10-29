@@ -14,8 +14,8 @@ import {
 import { TbFolder, TbFolderFilled } from "react-icons/tb";
 
 export const siteConfig: SiteConfigType = {
-  name: "Cinextma",
-  description: "Your only choice for a free movies and tv shows streaming website.",
+  name: "Stream Core",
+  description: "Discover movies and TV shows — search, track and explore the catalog.",
   favicon: "/favicon.ico",
   navItems: [
     {
