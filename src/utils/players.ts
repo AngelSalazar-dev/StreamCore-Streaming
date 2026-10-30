@@ -106,6 +106,44 @@ export const getMoviePlayers = (id: string | number, startAt?: number): PlayersP
       source: `https://moviesapi.club/movie/${id}`,
       ads: true,
     },
+    // Proveedores de streaming en español latino
+    {
+      title: "PelisPlus",
+      source: `https://pelisplus.cloud/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
+    },
+    {
+      title: "Cuevana3",
+      source: `https://cuevana3.co/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
+    },
+    {
+      title: "SeriesPE",
+      source: `https://seriespe.lat/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
+    },
+    // Proveedores adicionales de streaming en español latino
+    {
+      title: "Cinecalidad",
+      source: `https://cinecalidad.mx/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
+    },
+    {
+      title: "Repelis",
+      source: `https://repelisplus.to/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
+    },
+    {
+      title: "SeriesYonkis",
+      source: `https://seriesyonkis.nu/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
+    },
   ];
 };
 
@@ -114,8 +152,8 @@ export const getMoviePlayers = (id: string | number, startAt?: number): PlayersP
  * Each player is constructed using the provided TV show ID, season, and episode.
  *
  * @param {string | number} id - The ID of the TV show to be embedded in the player URLs.
- * @param {string | number} [season] - The season number of the TV show episode to be embedded.
- * @param {string | number} [episode] - The episode number of the TV show episode to be embedded.
+ * @param {string | number} [season] - The season number of the TV show episode to be embedded. Optional.
+ * @param {string | number} [episode] - The episode number of the TV show episode to be embedded. Optional.
  * @param {number} [startAt] - The start position in seconds to be embedded in the player URLs. Optional.
  * @returns {PlayersProps[]} - An array of objects, each containing
  * the title of the player and the corresponding source URL.
@@ -221,6 +259,44 @@ export const getTvShowPlayers = (
       title: "MoviesAPI",
       source: `https://moviesapi.club/tv/${id}-${season}-${episode}`,
       ads: true,
+    },
+    // Proveedores de streaming en español latino
+    {
+      title: "PelisPlus",
+      source: `https://pelisplus.cloud/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
+      ads: true,
+      resumable: true,
+    },
+    {
+      title: "Cuevana3",
+      source: `https://cuevana3.co/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
+      ads: true,
+      resumable: true,
+    },
+    {
+      title: "SeriesPE",
+      source: `https://seriespe.lat/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
+      ads: true,
+      resumable: true,
+    },
+    // Proveedores adicionales de streaming en español latino
+    {
+      title: "Cinecalidad",
+      source: `https://cinecalidad.mx/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
+    },
+    {
+      title: "Repelis",
+      source: `https://repelisplus.to/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
+    },
+    {
+      title: "SeriesYonkis",
+      source: `https://seriesyonkis.nu/embed/movie/${id}`,
+      ads: true,
+      resumable: true,
     },
   ];
 };
