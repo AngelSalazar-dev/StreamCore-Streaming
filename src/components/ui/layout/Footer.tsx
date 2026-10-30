@@ -36,7 +36,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
           </BreadcrumbItem>
         ))}
       </Breadcrumbs>
-      <p>© 2024 Wisnu Wirayuda</p>
+      <p>© 2026 Stream Core</p>
     </footer>
   );
 };

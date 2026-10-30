@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "cinextma",
+      "name": "streamcore",
       "dependencies": {
         "@bprogress/next": "^3.2.12",
         "@heroui/react": "^2.8.3",
