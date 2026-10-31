@@ -112,18 +112,21 @@ export const getMoviePlayers = (id: string | number, startAt?: number): PlayersP
       source: `https://pelisplus.cloud/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     {
       title: "Cuevana3",
       source: `https://cuevana3.co/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     {
       title: "SeriesPE",
       source: `https://seriespe.lat/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     // Proveedores adicionales de streaming en español latino
     {
@@ -131,18 +134,21 @@ export const getMoviePlayers = (id: string | number, startAt?: number): PlayersP
       source: `https://cinecalidad.mx/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     {
       title: "Repelis",
       source: `https://repelisplus.to/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     {
       title: "SeriesYonkis",
       source: `https://seriesyonkis.nu/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
   ];
 };
@@ -266,18 +272,21 @@ export const getTvShowPlayers = (
       source: `https://pelisplus.cloud/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     {
       title: "Cuevana3",
       source: `https://cuevana3.co/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     {
       title: "SeriesPE",
       source: `https://seriespe.lat/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     // Proveedores adicionales de streaming en español latino
     {
@@ -285,18 +294,21 @@ export const getTvShowPlayers = (
       source: `https://cinecalidad.mx/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     {
       title: "Repelis",
       source: `https://repelisplus.to/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
     {
       title: "SeriesYonkis",
       source: `https://seriesyonkis.nu/embed/movie/${id}`,
       ads: true,
       resumable: true,
+      idioma: "es_latino",
     },
   ];
 };
