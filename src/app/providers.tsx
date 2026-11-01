@@ -1,6 +1,6 @@
 "use client";
 
-import { PropsWithChildren, Suspense } from "react";
+import { PropsWithChildren, Suspense, useEffect } from "react";
 import { HeroUIProvider, ToastProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -24,6 +24,11 @@ export default function Providers({ children }: PropsWithChildren) {
   const pathName = usePathname();
   const { content } = useDiscoverFilters();
   const tv = pathName.includes("/tv/") || content === "tv";
+
+  useEffect(() => {
+    // Rewrites dynamic-route requests onto the prerendered static shells (see public/sw.js).
+    navigator.serviceWorker?.register("/sw.js").catch(() => {});
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

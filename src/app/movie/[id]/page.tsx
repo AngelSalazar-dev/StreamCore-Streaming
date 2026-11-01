@@ -1,14 +1,13 @@
 "use client";
 
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 import { Spinner } from "@heroui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { tmdb } from "@/api/tmdb-client";
 import { Cast } from "tmdb-ts/dist/types/credits";
-import { notFound } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import { Image } from "tmdb-ts";
 import dynamic from "next/dynamic";
-import { Params } from "@/types";
 import { NextPage } from "next";
 const PhotosSection = dynamic(() => import("@/components/ui/other/PhotosSection"));
 const BackdropSection = dynamic(() => import("@/components/sections/Movie/Detail/Backdrop"));
@@ -16,8 +15,12 @@ const OverviewSection = dynamic(() => import("@/components/sections/Movie/Detail
 const CastsSection = dynamic(() => import("@/components/sections/Movie/Detail/Casts"));
 const RelatedSection = dynamic(() => import("@/components/sections/Movie/Detail/Related"));
 
-const MovieDetailPage: NextPage<Params<{ id: number }>> = ({ params }) => {
-  const { id } = use(params);
+const MovieDetailPage: NextPage = () => {
+  const pathname = usePathname(); // subscribed to the router — window.location is not reactive
+  // The static export only prerenders id=1, so params always say 1 — the real id is in the URL.
+  const id = Number(pathname.split("/")[2]);
+  // During client nav the URL can lag one render behind (id = NaN); queries wait for validId.
+  const validId = Number.isFinite(id);
 
   const {
     data: movie,
@@ -33,9 +36,10 @@ const MovieDetailPage: NextPage<Params<{ id: number }>> = ({ params }) => {
         "similar",
       ]),
     queryKey: ["movie-detail", id],
+    enabled: validId,
   });
 
-  if (isPending) {
+  if (!validId || isPending) {
     return <Spinner size="lg" className="absolute-center" variant="simple" />;
   }
 

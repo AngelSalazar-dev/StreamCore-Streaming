@@ -114,7 +114,8 @@ export const getImageUrl = (
       : type === "backdrop"
         ? "https://wallpapercave.com/wp/wp1945939.jpg"
         : "";
-  return path ? `http://image.tmdb.org/t/p/${size}/${path}` : fallback;
+  // https:// (not http://): the Android WebView origin is https://localhost and blocks mixed content
+  return path ? `https://image.tmdb.org/t/p/${size}/${path}` : fallback;
 };
 
 /**

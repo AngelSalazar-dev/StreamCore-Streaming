@@ -1,12 +1,11 @@
 "use client";
 
 import { tmdb } from "@/api/tmdb-client";
-import { Params } from "@/types";
 import { Spinner } from "@heroui/react";
 import { useScrollIntoView } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
-import { notFound } from "next/navigation";
-import { Suspense, use } from "react";
+import { notFound, usePathname } from "next/navigation";
+import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { NextPage } from "next";
 const PhotosSection = dynamic(() => import("@/components/ui/other/PhotosSection"));
@@ -16,8 +15,12 @@ const TvShowBackdropSection = dynamic(() => import("@/components/sections/TV/Det
 const TvShowOverviewSection = dynamic(() => import("@/components/sections/TV/Details/Overview"));
 const TvShowsSeasonsSelection = dynamic(() => import("@/components/sections/TV/Details/Seasons"));
 
-const TVShowDetailPage: NextPage<Params<{ id: number }>> = ({ params }) => {
-  const { id } = use(params);
+const TVShowDetailPage: NextPage = () => {
+  const pathname = usePathname(); // subscribed to the router — window.location is not reactive
+  // The static export only prerenders id=1, so params always say 1 — the real id is in the URL.
+  const id = Number(pathname.split("/")[2]);
+  // During client nav the URL can lag one render behind (id = NaN); queries wait for validId.
+  const validId = Number.isFinite(id);
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
     duration: 500,
   });
@@ -36,9 +39,10 @@ const TVShowDetailPage: NextPage<Params<{ id: number }>> = ({ params }) => {
         "similar",
       ]),
     queryKey: ["tv-show-detail", id],
+    enabled: validId,
   });
 
-  if (isPending) {
+  if (!validId || isPending) {
     return (
       <div className="mx-auto max-w-5xl">
         <Spinner size="lg" className="absolute-center" color="warning" variant="simple" />

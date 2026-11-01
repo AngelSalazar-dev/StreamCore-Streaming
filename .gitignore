@@ -37,3 +37,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 package-lock.json
+
+# Local bulk artifacts / backups (not part of the app source)
+/mobile-app
+/STREAM CORE
+/StreamCore-FIX-AUTOMATICO
+/StreamCore-FIX-AUTOMATICO.zip
+/*.apk
+src/components/CapacitorProvider_1.tsx
+src/hooks/useCapacitorInit_1.ts
+src/utils/openTrailer_1.ts

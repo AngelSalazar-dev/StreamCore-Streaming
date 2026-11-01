@@ -1,7 +1,7 @@
 import { signIn } from "@/actions/auth";
 import PasswordInput from "@/components/ui/input/PasswordInput";
 import { LoginFormSchema } from "@/schemas/auth";
-import { isEmpty } from "@/utils/helpers";
+import { isEmpty, isCaptchaActive } from "@/utils/helpers";
 import { Google, LockPassword, Mail } from "@/utils/icons";
 import { addToast, Button, Divider, Input, Link } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +32,7 @@ const AuthLoginForm: React.FC<AuthFormProps> = ({ setForm }) => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    if (isEmpty(data.captchaToken)) {
+    if (isEmpty(data.captchaToken) && isCaptchaActive()) {
       setIsVerifying(true);
       return;
     }
@@ -107,7 +107,7 @@ const AuthLoginForm: React.FC<AuthFormProps> = ({ setForm }) => {
             Forgot password?
           </Link>
         </div>
-        {isVerifying && (
+        {isVerifying && isCaptchaActive() && (
           <Turnstile
             className="flex h-fit w-full items-center justify-center"
             siteKey={env.NEXT_PUBLIC_CAPTCHA_SITE_KEY}

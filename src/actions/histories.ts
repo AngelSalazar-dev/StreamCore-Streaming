@@ -1,14 +1,13 @@
-"use server";
-
-import { env } from "@/utils/env";
 import { UnifiedPlayerEventData } from "@/hooks/usePlayerEvents";
 import { ActionResponse } from "@/types";
 import { HistoryDetail } from "@/types/movie";
 import { mutateMovieTitle, mutateTvShowTitle } from "@/utils/movies";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 
 const fetchTMDB = async (path: string) => {
-  const res = await fetch(`https://api.themoviedb.org/3/${path}?api_key=${env.TMDB_API_KEY}`);
+  const res = await fetch(
+    `https://api.themoviedb.org/3/${path}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+  );
   if (!res.ok) throw new Error(`TMDB ${res.status}`);
   return res.json();
 };
@@ -26,7 +25,7 @@ export const syncHistory = async (
   }
 
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {
@@ -110,7 +109,7 @@ export const syncHistory = async (
 
 export const getUserHistories = async (limit: number = 20): ActionResponse<HistoryDetail[]> => {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {
@@ -155,7 +154,7 @@ export const getUserHistories = async (limit: number = 20): ActionResponse<Histo
 
 export const getMovieLastPosition = async (id: number): Promise<number> => {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {
@@ -192,7 +191,7 @@ export const getTvShowLastPosition = async (
   episode: number,
 ): Promise<number> => {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {

@@ -3,11 +3,12 @@ import type { TMDB } from "tmdb-ts";
 type Params = Record<string, string | number | undefined>;
 
 /**
- * Fetches TMDB data through our cached `/api/tmdb` route, so the access token never
- * reaches the browser. Query keys are sorted to keep URLs (and CDN cache keys) stable.
+ * Calls TMDB directly with the v3 API key (static export has no server route).
+ * Query keys are sorted to keep URLs (and cache keys) stable.
  */
 const get = async <T>(path: string, params: Params = {}): Promise<T> => {
   const search = new URLSearchParams();
+  search.set("api_key", process.env.NEXT_PUBLIC_TMDB_API_KEY!);
   Object.keys(params)
     .sort()
     .forEach((key) => {
@@ -16,7 +17,7 @@ const get = async <T>(path: string, params: Params = {}): Promise<T> => {
     });
 
   const query = search.toString();
-  const response = await fetch(`/api/tmdb/${path}${query ? `?${query}` : ""}`);
+  const response = await fetch(`https://api.themoviedb.org/3/${path}?${query}`);
 
   if (!response.ok) return Promise.reject(await response.json().catch(() => response.statusText));
   return response.json();

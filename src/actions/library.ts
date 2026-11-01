@@ -1,7 +1,4 @@
-"use server";
-
-import { createClient } from "@/utils/supabase/server";
-import { revalidatePath } from "next/cache";
+import { createClient } from "@/utils/supabase/client";
 
 // Types
 type ContentType = "movie" | "tv";
@@ -46,7 +43,7 @@ interface CheckWatchlistResponse extends ActionResponse {
  */
 export async function addToWatchlist(item: WatchlistItem): Promise<ActionResponse<WatchlistEntry>> {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {
@@ -110,9 +107,6 @@ export async function addToWatchlist(item: WatchlistItem): Promise<ActionRespons
       };
     }
 
-    // Revalidate the watchlist page if you have one
-    revalidatePath("/library");
-
     return {
       success: true,
       data,
@@ -132,7 +126,7 @@ export async function addToWatchlist(item: WatchlistItem): Promise<ActionRespons
  */
 export async function removeFromWatchlist(id: number, type: ContentType): Promise<ActionResponse> {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {
@@ -179,9 +173,6 @@ export async function removeFromWatchlist(id: number, type: ContentType): Promis
       };
     }
 
-    // Revalidate the watchlist page
-    revalidatePath("/library");
-
     return {
       success: true,
       message: "Removed from watchlist successfully",
@@ -200,7 +191,7 @@ export async function removeFromWatchlist(id: number, type: ContentType): Promis
  */
 export const removeAllWatchlist = async (type: ContentType): Promise<ActionResponse> => {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {
@@ -238,9 +229,6 @@ export const removeAllWatchlist = async (type: ContentType): Promise<ActionRespo
       };
     }
 
-    // Revalidate the watchlist page
-    revalidatePath("/library");
-
     return {
       success: true,
       message: "Removed items from watchlist successfully",
@@ -262,7 +250,7 @@ export async function checkInWatchlist(
   type: ContentType,
 ): Promise<CheckWatchlistResponse> {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {
@@ -320,7 +308,7 @@ export async function getWatchlist(
   limit: number = 20,
 ): Promise<WatchlistResponse> {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
 
     // Get current user
     const {

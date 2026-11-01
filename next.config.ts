@@ -1,17 +1,21 @@
-import { NextConfig } from "next/dist/server/config";
-
-const nextConfig: NextConfig = {
-  // images are served straight from TMDB, skip the host's paid image optimization
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Multiple lockfiles confuse Turbopack's root inference (it picked a
+  // package-lock.json in the user home), which breaks next/font resolution.
+  turbopack: {
+    root: __dirname,
+  },
+  output: 'export',
+  trailingSlash: true,
   images: {
     unoptimized: true,
+    remotePatterns: [
+      { protocol: 'https', hostname: 'image.tmdb.org' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
   },
-  // https://github.com/payloadcms/payload/issues/12550#issuecomment-2939070941
-  turbopack: {
-    resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
-  },
-  experimental: {
-    optimizePackageImports: ["@heroui/react"],
-    prefetchInlining: true,
+  typescript: {
+    ignoreBuildErrors: false,
   },
 };
 

@@ -106,6 +106,45 @@ export const getMoviePlayers = (id: string | number, startAt?: number): PlayersP
       source: `https://moviesapi.club/movie/${id}`,
       ads: true,
     },
+    // Proveedores en español latino (embeds vivos; elegir audio "Español" en el menú del reproductor)
+    {
+      title: "VidLink (ES)",
+      source: `https://vidlink.pro/movie/${id}?player=jw&primaryColor=006fee&autoplay=false&startAt=${startAt || ""}`,
+      ads: true,
+      resumable: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "VidSrc v3 (ES)",
+      source: `https://vidsrc.cc/v3/embed/movie/${id}?autoPlay=false`,
+      ads: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "2Embed (ES)",
+      source: `https://www.2embed.cc/embed/${id}`,
+      ads: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "VidKing (ES)",
+      source: `https://www.vidking.net/embed/movie/${id}?color=006fee&autoplay=false`,
+      ads: true,
+      resumable: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "AutoEmbed (ES)",
+      source: `https://autoembed.co/movie/tmdb/${id}`,
+      ads: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "<Embed> (ES)",
+      source: `https://embed.su/embed/movie/${id}`,
+      ads: true,
+      idioma: "es_latino",
+    },
   ];
 };
 
@@ -114,8 +153,8 @@ export const getMoviePlayers = (id: string | number, startAt?: number): PlayersP
  * Each player is constructed using the provided TV show ID, season, and episode.
  *
  * @param {string | number} id - The ID of the TV show to be embedded in the player URLs.
- * @param {string | number} [season] - The season number of the TV show episode to be embedded.
- * @param {string | number} [episode] - The episode number of the TV show episode to be embedded.
+ * @param {string | number} [season] - The season number of the TV show episode to be embedded. Optional.
+ * @param {string | number} [episode] - The episode number of the TV show episode to be embedded. Optional.
  * @param {number} [startAt] - The start position in seconds to be embedded in the player URLs. Optional.
  * @returns {PlayersProps[]} - An array of objects, each containing
  * the title of the player and the corresponding source URL.
@@ -221,6 +260,45 @@ export const getTvShowPlayers = (
       title: "MoviesAPI",
       source: `https://moviesapi.club/tv/${id}-${season}-${episode}`,
       ads: true,
+    },
+    // Proveedores en español latino (embeds vivos; elegir audio "Español" en el menú del reproductor)
+    {
+      title: "VidLink (ES)",
+      source: `https://vidlink.pro/tv/${id}/${season}/${episode}?player=jw&primaryColor=f5a524&autoplay=false&startAt=${startAt || ""}`,
+      ads: true,
+      resumable: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "VidSrc v3 (ES)",
+      source: `https://vidsrc.cc/v3/embed/tv/${id}/${season}/${episode}?autoPlay=false`,
+      ads: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "2Embed (ES)",
+      source: `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`,
+      ads: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "VidKing (ES)",
+      source: `https://www.vidking.net/embed/tv/${id}/${season}/${episode}?color=f5a524&autoplay=false`,
+      ads: true,
+      resumable: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "AutoEmbed (ES)",
+      source: `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}`,
+      ads: true,
+      idioma: "es_latino",
+    },
+    {
+      title: "<Embed> (ES)",
+      source: `https://embed.su/embed/tv/${id}/${season}/${episode}`,
+      ads: true,
+      idioma: "es_latino",
     },
   ];
 };

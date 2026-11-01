@@ -64,6 +64,7 @@ export type SiteConfigType = {
 export type PlayersProps = {
   title: string;
   source: `https://${string}`;
+  idioma?: string;
   recommended?: boolean;
   fast?: boolean;
   ads?: boolean;

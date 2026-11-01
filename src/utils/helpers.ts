@@ -15,6 +15,14 @@ export const cn = (...inputs: ClassValue[]): string => {
 };
 
 /**
+ * Whether Cloudflare Turnstile is actually usable: a real site key starts with "0x"
+ * (or the "1x" test key). With a dummy key the widget renders blank and never fires
+ * onSuccess, which blocks the form forever.
+ */
+export const isCaptchaActive = (): boolean =>
+  /^[01]x/.test(process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY ?? "");
+
+/**
  * Checks if a variable is empty
  * - `null` and `undefined` are considered empty
  * - Empty strings, arrays, maps, sets, and objects are considered empty

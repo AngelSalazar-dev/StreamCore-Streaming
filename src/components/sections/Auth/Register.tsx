@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { useCallback, useState } from "react";
-import { isEmpty } from "@/utils/helpers";
+import { isEmpty, isCaptchaActive } from "@/utils/helpers";
 import { env } from "@/utils/env";
 import GoogleLoginButton from "@/components/ui/button/GoogleLoginButton";
 
@@ -33,7 +33,7 @@ const AuthRegisterForm: React.FC<AuthFormProps> = ({ setForm }) => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    if (isEmpty(data.captchaToken)) {
+    if (isEmpty(data.captchaToken) && isCaptchaActive()) {
       setIsVerifying(true);
       return;
     }
@@ -119,7 +119,7 @@ const AuthRegisterForm: React.FC<AuthFormProps> = ({ setForm }) => {
           startContent={<LockPassword className="text-xl" />}
           isDisabled={isSubmitting || isVerifying}
         />
-        {isVerifying && (
+        {isVerifying && isCaptchaActive() && (
           <Turnstile
             className="flex h-fit w-full items-center justify-center"
             siteKey={env.NEXT_PUBLIC_CAPTCHA_SITE_KEY}

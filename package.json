@@ -16,6 +16,15 @@
   },
   "dependencies": {
     "@bprogress/next": "^3.2.12",
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4",
     "@heroui/react": "^2.8.3",
     "@hookform/resolvers": "^5.2.1",
     "@mantine/hooks": "^8.2.4",
@@ -48,6 +57,7 @@
     "zod": "^4.1.1"
   },
   "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
     "@iconify/react": "^6.0.0",
     "@tailwindcss/postcss": "^4.1.12",
     "@tanstack/react-query-devtools": "^5.85.3",

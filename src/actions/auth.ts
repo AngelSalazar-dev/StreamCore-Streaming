@@ -1,7 +1,6 @@
-"use server";
-
 import { SupabaseClient } from "@supabase/supabase-js";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
+import { isCaptchaActive } from "@/utils/helpers";
 import {
   ForgotPasswordFormInput,
   ForgotPasswordFormSchema,
@@ -35,7 +34,6 @@ type AuthAction<T> = (data: T, supabase: SupabaseClient) => ActionResponse;
 const createAuthAction = <T extends { captchaToken?: string }>(
   schema: z.ZodSchema<T>,
   action: AuthAction<T>,
-  admin?: boolean,
 ) => {
   return async (formData: T): ActionResponse => {
     const result = schema.safeParse(formData);
@@ -44,12 +42,12 @@ const createAuthAction = <T extends { captchaToken?: string }>(
       return { success: false, message };
     }
 
-    if (!result.data.captchaToken) {
+    if (!result.data.captchaToken && isCaptchaActive()) {
       return { success: false, message: "Captcha is required." };
     }
 
     try {
-      const supabase = await createClient(admin);
+      const supabase = createClient();
       return await action(result.data, supabase);
     } catch (error) {
       // Catch potential unhandled errors in actions
@@ -164,7 +162,7 @@ const resetPasswordAction: AuthAction<ResetPasswordFormInput> = async (data, sup
 };
 
 export const signIn = createAuthAction(LoginFormSchema, signInWithEmailAction);
-export const signUp = createAuthAction(RegisterFormSchema, signUpAction, true);
+export const signUp = createAuthAction(RegisterFormSchema, signUpAction);
 export const sendResetPasswordEmail = createAuthAction(
   ForgotPasswordFormSchema,
   sendResetPasswordEmailAction,
@@ -172,7 +170,7 @@ export const sendResetPasswordEmail = createAuthAction(
 export const resetPassword = createAuthAction(ResetPasswordFormSchema, resetPasswordAction);
 
 export const signOut = async (): ActionResponse => {
-  const supabase = await createClient();
+  const supabase = createClient();
   const { error } = await supabase.auth.signOut();
 
   if (error) return { success: false, message: error.message };

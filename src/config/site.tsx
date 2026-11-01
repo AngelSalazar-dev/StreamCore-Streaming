@@ -128,7 +128,7 @@ export const siteConfig: SiteConfigType = {
     ],
   },
   socials: {
-    github: "https://github.com/wisnuwirayuda15/cinextma",
+    github: "https://github.com/AngelSalazar-dev/StreamCore-Streaming",
   },
 };
 
