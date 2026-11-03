@@ -52,14 +52,14 @@ const MoviePlayer: React.FC<MoviePlayerProps> = ({ movie, startAt }) => {
           onOpenSource={handlers.open}
           hidden={idle && !mobile}
         />
-        <Card shadow="md" radius="none" className="relative h-screen">
+        <Card shadow="md" radius="none" className="relative h-dvh w-full">
           <Skeleton className="absolute h-full w-full" />
           {seen && (
             <iframe
               allowFullScreen
               key={PLAYER.title}
               src={PLAYER.source}
-              className={cn("z-10 h-full", { "pointer-events-none": idle && !mobile })}
+              className={cn("z-10 size-full", { "pointer-events-none": idle && !mobile })}
             />
           )}
         </Card>

@@ -5,25 +5,28 @@ import clsx from "clsx";
 import { Link } from "@heroui/link";
 import { usePathname } from "next/navigation";
 import { Chip } from "@heroui/chip";
+import { useIsNativeApp } from "@/hooks/useIsNativeApp";
 
 const BottomNavbar = () => {
   const pathName = usePathname();
-  const hrefs = siteConfig.navItems.map((item) => item.href);
+  const isNative = useIsNativeApp();
+  const navItems = siteConfig.navItems.filter((item) => !isNative || !item.websiteOnly);
+  const hrefs = navItems.map((item) => item.href);
   const show = hrefs.includes(pathName);
 
   return (
     show && (
       <>
         <div className="pt-20 md:hidden" />
-        <div className="fixed bottom-0 left-0 z-50 block h-fit w-full translate-y-px border-t border-secondary-background bg-background py-2 md:hidden">
-          <div className="mx-auto grid h-full max-w-lg grid-cols-5">
-            {siteConfig.navItems.map((item) => {
+        <div className="border-secondary-background bg-background fixed bottom-0 left-0 z-50 block h-fit w-full translate-y-px border-t py-2 md:hidden">
+          <div className="mx-auto grid h-full max-w-lg grid-cols-6">
+            {navItems.map((item) => {
               const isActive = pathName === item.href;
               return (
                 <Link
                   href={item.href}
                   key={item.href}
-                  className="flex items-center justify-center text-foreground"
+                  className="text-foreground flex items-center justify-center"
                 >
                   <div className="flex max-h-[50px] flex-col items-center justify-center">
                     <Chip

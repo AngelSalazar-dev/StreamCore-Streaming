@@ -5,6 +5,7 @@ import { cn } from "@/utils/helpers";
 import { BreadcrumbItem, Breadcrumbs, Link } from "@heroui/react";
 import { usePathname } from "next/navigation";
 import { FaGithub } from "react-icons/fa6";
+import WebsiteOnly from "../other/WebsiteOnly";
 
 interface FooterProps {
   className?: string;
@@ -21,9 +22,11 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
       )}
     >
       <h6>{siteConfig.description}</h6>
-      <Link isExternal href={siteConfig.socials.github} color="foreground">
-        <FaGithub size={24} />
-      </Link>
+      <WebsiteOnly>
+        <Link isExternal href={siteConfig.socials.github} color="foreground">
+          <FaGithub size={24} />
+        </Link>
+      </WebsiteOnly>
       <Breadcrumbs
         separator="•"
         itemClasses={{

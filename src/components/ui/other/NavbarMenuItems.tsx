@@ -1,6 +1,7 @@
 import { siteConfig } from "@/config/site";
 import { Link, Tab, Tabs, TabsProps } from "@heroui/react";
 import { usePathname } from "next/navigation";
+import { useIsNativeApp } from "@/hooks/useIsNativeApp";
 
 interface NavbarMenuItemsProps extends TabsProps {
   withIcon?: boolean;
@@ -9,6 +10,7 @@ interface NavbarMenuItemsProps extends TabsProps {
     label: string;
     icon?: React.ReactNode;
     activeIcon?: React.ReactNode;
+    websiteOnly?: boolean;
   }[];
 }
 
@@ -20,6 +22,8 @@ const NavbarMenuItems: React.FC<NavbarMenuItemsProps> = ({
   size = "lg",
 }) => {
   const pathName = usePathname();
+  const isNative = useIsNativeApp();
+  const visibleItems = menuArray.filter((item) => !isNative || !item.websiteOnly);
 
   return (
     <Tabs
@@ -32,7 +36,7 @@ const NavbarMenuItems: React.FC<NavbarMenuItemsProps> = ({
         tab: "h-full w-full",
       }}
     >
-      {menuArray.map((item) => {
+      {visibleItems.map((item) => {
         const isActive = pathName === item.href;
         let title: React.ReactNode = item.label;
 
