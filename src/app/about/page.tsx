@@ -5,6 +5,7 @@ import { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { NextPage } from "next";
+import WebsiteOnly from "@/components/ui/other/WebsiteOnly";
 const FAQ = dynamic(() => import("@/components/sections/About/FAQ"));
 
 export const metadata: Metadata = {
@@ -18,9 +19,11 @@ const AboutPage: NextPage = () => {
         <Suspense>
           <FAQ />
         </Suspense>
-        <Link target="_blank" href={siteConfig.socials.github} className="flex justify-center">
-          <FaGithub size={30} />
-        </Link>
+        <WebsiteOnly>
+          <Link target="_blank" href={siteConfig.socials.github} className="flex justify-center">
+            <FaGithub size={30} />
+          </Link>
+        </WebsiteOnly>
       </div>
     </div>
   );

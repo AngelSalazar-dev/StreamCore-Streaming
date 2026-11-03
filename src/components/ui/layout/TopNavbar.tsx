@@ -12,12 +12,15 @@ import UserProfileButton from "../button/UserProfileButton";
 import SearchInput from "../input/SearchInput";
 import ThemeSwitchDropdown from "../input/ThemeSwitchDropdown";
 import BrandLogo from "../other/BrandLogo";
+import { useIsNativeApp } from "@/hooks/useIsNativeApp";
 
 const TopNavbar = () => {
   const pathName = usePathname();
   const [{ y }] = useWindowScroll();
+  const isNative = useIsNativeApp();
   const opacity = Math.min((y / 1000) * 5, 1);
-  const hrefs = siteConfig.navItems.map((item) => item.href);
+  const navItems = siteConfig.navItems.filter((item) => !isNative || !item.websiteOnly);
+  const hrefs = navItems.map((item) => item.href);
   const show = hrefs.includes(pathName);
   const tv = pathName.includes("/tv/");
   const player = pathName.includes("/player");

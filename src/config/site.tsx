@@ -12,6 +12,7 @@ import {
   IoMoon,
 } from "react-icons/io5";
 import { TbFolder, TbFolderFilled } from "react-icons/tb";
+import { FaAndroid } from "react-icons/fa6";
 
 export const siteConfig: SiteConfigType = {
   name: "Stream Core",
@@ -47,6 +48,13 @@ export const siteConfig: SiteConfigType = {
       href: "/about",
       icon: <IoInformationCircleOutline className="size-full" />,
       activeIcon: <IoInformationCircle className="size-full" />,
+    },
+    {
+      label: "Download",
+      href: "/downloads",
+      icon: <FaAndroid className="size-full" />,
+      activeIcon: <FaAndroid className="size-full" />,
+      websiteOnly: true,
     },
   ],
   themes: [
