@@ -2,6 +2,10 @@ import { Movie, TV } from "tmdb-ts/dist/types";
 
 export type ContentType = "movie" | "tv";
 
+export type ProviderLanguage = "original" | "es_latino" | "es_es";
+
+export type ProviderPlaybackMode = "iframe" | "direct";
+
 export type Params<T> = {
   params: Promise<T>;
 };
@@ -65,7 +69,10 @@ export type SiteConfigType = {
 export type PlayersProps = {
   title: string;
   source: `https://${string}`;
-  idioma?: string;
+  providerId?: string;
+  language?: ProviderLanguage;
+  idioma?: ProviderLanguage;
+  playbackMode?: ProviderPlaybackMode;
   recommended?: boolean;
   fast?: boolean;
   ads?: boolean;
