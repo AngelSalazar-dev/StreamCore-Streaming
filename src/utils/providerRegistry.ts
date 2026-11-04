@@ -1,4 +1,9 @@
-import { ContentType, PlayersProps, ProviderLanguage, ProviderPlaybackMode } from "@/types";
+import {
+  ContentType,
+  PlayersProps,
+  ProviderLanguage,
+  ProviderPlaybackMode,
+} from "@/types";
 
 type SecureUrl = `https://${string}`;
 
@@ -9,22 +14,21 @@ export type ProviderInput = {
   startAt?: number;
 };
 
-type ProviderOptions = {
+export type ProviderDefinition = {
   id: string;
   title: string;
   language: ProviderLanguage;
+  mediaTypes: ContentType[];
   playbackMode: ProviderPlaybackMode;
   priority: number;
   recommended?: boolean;
   fast?: boolean;
   ads?: boolean;
   resumable?: boolean;
-};
-
-export type ProviderDefinition = ProviderOptions & {
-  mediaTypes: ContentType[];
   buildUrl: (input: ProviderInput) => SecureUrl;
 };
+
+type ProviderOptions = Omit<ProviderDefinition, "buildUrl" | "mediaTypes">;
 
 const define = (
   options: ProviderOptions,
@@ -53,238 +57,246 @@ const movie = (input: ProviderInput): string => String(input.id);
 const tv = (input: ProviderInput): string =>
   `${input.id}/${input.season}/${input.episode}`;
 
+const movieAndTv = (
+  options: Omit<ProviderOptions, "language" | "playbackMode">,
+  movieUrl: (input: ProviderInput) => SecureUrl,
+  tvUrl: (input: ProviderInput) => SecureUrl,
+): ProviderDefinition[] => [
+  define(original({ ...options, id: `${options.id}-movie` }), ["movie"], movieUrl),
+  define(original({ ...options, id: `${options.id}-tv` }), ["tv"], tvUrl),
+];
+
+const latinoMovieAndTv = (
+  options: Omit<ProviderOptions, "language" | "playbackMode">,
+  movieUrl: (input: ProviderInput) => SecureUrl,
+  tvUrl: (input: ProviderInput) => SecureUrl,
+): ProviderDefinition[] => [
+  define(latino({ ...options, id: `${options.id}-movie` }), ["movie"], movieUrl),
+  define(latino({ ...options, id: `${options.id}-tv` }), ["tv"], tvUrl),
+];
+
 export const providerRegistry: ProviderDefinition[] = [
-  define(
-    original({
-      id: "vidlink-movie",
+  ...movieAndTv(
+    {
+      id: "vidlink",
       title: "VidLink",
       priority: 10,
+      recommended: true,
       fast: true,
       ads: true,
       resumable: true,
-    }),
-    ["movie"],
+    },
     ({ id, startAt }) =>
       `https://vidlink.pro/movie/${id}?player=jw&primaryColor=006fee&secondaryColor=a2a2a2&iconColor=eefdec&autoplay=false&startAt=${startAt || ""}`,
-  ),
-  define(
-    original({
-      id: "vidlink-tv",
-      title: "VidLink",
-      priority: 10,
-      fast: true,
-      ads: true,
-      resumable: true,
-    }),
-    ["tv"],
     ({ id, season, episode, startAt }) =>
       `https://vidlink.pro/tv/${id}/${season}/${episode}?player=jw&primaryColor=f5a524&secondaryColor=a2a2a2&iconColor=eefdec&autoplay=false&startAt=${startAt || ""}`,
   ),
-  define(
-    original({
-      id: "vidlink-compact-movie",
+  ...movieAndTv(
+    {
+      id: "vidlink-2",
       title: "VidLink 2",
       priority: 20,
+      recommended: true,
       fast: true,
       ads: true,
       resumable: true,
-    }),
-    ["movie"],
+    },
     ({ id, startAt }) =>
       `https://vidlink.pro/movie/${id}?primaryColor=006fee&autoplay=false&startAt=${startAt}`,
-  ),
-  define(
-    original({
-      id: "vidlink-compact-tv",
-      title: "VidLink 2",
-      priority: 20,
-      fast: true,
-      ads: true,
-      resumable: true,
-    }),
-    ["tv"],
     ({ id, season, episode, startAt }) =>
       `https://vidlink.pro/tv/${id}/${season}/${episode}?primaryColor=f5a524&autoplay=false&startAt=${startAt}`,
   ),
-  define(
-    original({
+  ...movieAndTv(
+    {
       id: "vidking",
       title: "VidKing",
       priority: 30,
+      recommended: true,
       fast: true,
       resumable: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://www.vidking.net/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}?color=${input.season === undefined ? "006fee" : "f5a524"}&autoplay=false`,
+    },
+    ({ id }) =>
+      `https://www.vidking.net/embed/movie/${id}?color=006fee&autoplay=false`,
+    ({ id, season, episode }) =>
+      `https://www.vidking.net/embed/tv/${id}/${season}/${episode}?color=f5a524&autoplay=false`,
   ),
-  define(
-    original({ id: "embed-su", title: "<Embed>", priority: 40, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://embed.su/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}`,
+  ...movieAndTv(
+    { id: "embed-su", title: "<Embed>", priority: 40, ads: true },
+    ({ id }) => `https://embed.su/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://embed.su/embed/tv/${id}/${season}/${episode}`,
   ),
-  define(
-    original({
-      id: "multiembed",
+  ...movieAndTv(
+    {
+      id: "superembed",
       title: "SuperEmbed",
       priority: 50,
       fast: true,
       ads: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://multiembed.mov/directstream.php?video_id=${input.id}&tmdb=1${input.season === undefined ? "" : `&s=${input.season}&e=${input.episode}`}`,
+    },
+    ({ id }) =>
+      `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`,
+    ({ id, season, episode }) =>
+      `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`,
   ),
-  define(
-    original({ id: "filmku", title: "FilmKu", priority: 60, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://filmku.stream/embed/${input.season === undefined ? movie(input) : `series?tmdb=${input.id}&sea=${input.season}&epi=${input.episode}`}`,
+  ...movieAndTv(
+    { id: "filmku", title: "FilmKu", priority: 60, ads: true },
+    ({ id }) => `https://filmku.stream/embed/${id}`,
+    ({ id, season, episode }) =>
+      `https://filmku.stream/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
   ),
-  define(
-    original({ id: "nontongo", title: "NontonGo", priority: 70, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://www.nontongo.win/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}`,
+  ...movieAndTv(
+    { id: "nontongo", title: "NontonGo", priority: 70, ads: true },
+    ({ id }) => `https://www.nontongo.win/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://www.NontonGo.win/embed/tv/${id}/${season}/${episode}`,
   ),
-  define(
-    original({
+  ...movieAndTv(
+    {
       id: "autoembed",
       title: "AutoEmbed 1",
       priority: 80,
       fast: true,
       ads: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://autoembed.co/${input.season === undefined ? `movie/tmdb/${input.id}` : `tv/tmdb/${input.id}-${input.season}-${input.episode}`}`,
+    },
+    ({ id }) => `https://autoembed.co/movie/tmdb/${id}`,
+    ({ id, season, episode }) =>
+      `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}`,
   ),
-  define(
-    original({ id: "autoembed-cc", title: "AutoEmbed 2", priority: 90, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://player.autoembed.me/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}`,
+  ...movieAndTv(
+    { id: "autoembed-cc", title: "AutoEmbed 2", priority: 81, ads: true },
+    ({ id }) => `https://player.autoembed.cc/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://player.autoembed.cc/embed/tv/${id}/${season}/${episode}`,
   ),
-  define(
-    original({ id: "2embed", title: "2Embed", priority: 100, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://www.2embed.cc/${input.season === undefined ? `embed/${movie(input)}` : `embedtv/${input.id}&s=${input.season}&e=${input.episode}`}`,
+  ...movieAndTv(
+    {
+      id: "autoembed-live",
+      title: "AutoEmbed 2 (actualizado)",
+      priority: 82,
+      ads: true,
+    },
+    ({ id }) => `https://player.autoembed.me/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://player.autoembed.me/embed/tv/${id}/${season}/${episode}`,
   ),
-  define(
-    original({ id: "vidsrc-xyz", title: "VidSrc 1", priority: 110, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://vidsrc.xyz/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}`,
+  ...movieAndTv(
+    { id: "2embed", title: "2Embed", priority: 90, ads: true },
+    ({ id }) => `https://www.2embed.cc/embed/${id}`,
+    ({ id, season, episode }) =>
+      `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`,
   ),
-  define(
-    original({ id: "vidsrc-to", title: "VidSrc 2", priority: 120, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://vidsrc.to/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}`,
+  ...movieAndTv(
+    { id: "vidsrc-xyz", title: "VidSrc 1", priority: 100, ads: true },
+    ({ id }) => `https://vidsrc.xyz/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://vidsrc.xyz/embed/tv/${id}/${season}/${episode}`,
   ),
-  define(
-    original({ id: "vidsrc-icu", title: "VidSrc 3", priority: 130, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://vidsrc.icu/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}`,
+  ...movieAndTv(
+    { id: "vidsrc-to", title: "VidSrc 2", priority: 101, ads: true },
+    ({ id }) => `https://vidsrc.to/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`,
   ),
-  define(
-    original({ id: "vidsrc-v2", title: "VidSrc 4", priority: 140, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://vidsrc.cc/v2/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}?autoPlay=false`,
+  ...movieAndTv(
+    { id: "vidsrc-icu", title: "VidSrc 3", priority: 102, ads: true },
+    ({ id }) => `https://vidsrc.icu/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://vidsrc.icu/embed/tv/${id}/${season}/${episode}`,
   ),
-  define(
-    original({
-      id: "vidsrc-v3",
+  ...movieAndTv(
+    { id: "vidsrc-cc-v2", title: "VidSrc 4", priority: 103, ads: true },
+    ({ id }) => `https://vidsrc.cc/v2/embed/movie/${id}?autoPlay=false`,
+    ({ id, season, episode }) =>
+      `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}?autoPlay=false`,
+  ),
+  ...movieAndTv(
+    {
+      id: "vidsrc-cc-v3",
       title: "VidSrc 5",
-      priority: 150,
+      priority: 104,
+      recommended: true,
       fast: true,
       ads: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://vidsrc.cc/v3/embed/${input.season === undefined ? "movie" : "tv"}/${input.season === undefined ? movie(input) : tv(input)}?autoPlay=false`,
+    },
+    ({ id }) => `https://vidsrc.cc/v3/embed/movie/${id}?autoPlay=false`,
+    ({ id, season, episode }) =>
+      `https://vidsrc.cc/v3/embed/tv/${id}/${season}/${episode}?autoPlay=false`,
   ),
-  define(
-    original({ id: "moviesapi", title: "MoviesAPI", priority: 160, ads: true }),
-    ["movie", "tv"],
-    (input) =>
-      `https://moviesapi.club/${input.season === undefined ? `movie/${movie(input)}` : `tv/${input.id}-${input.season}-${input.episode}`}`,
+  ...movieAndTv(
+    { id: "moviesapi", title: "MoviesAPI", priority: 110, ads: true },
+    ({ id }) => `https://moviesapi.club/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://moviesapi.club/tv/${id}-${season}-${episode}`,
   ),
-  define(
-    latino({
+  ...latinoMovieAndTv(
+    {
       id: "pelisplus",
       title: "PelisPlus",
       priority: 200,
       ads: true,
       resumable: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://pelisplus.cloud/embed/${input.season === undefined ? `movie/${movie(input)}` : `series?tmdb=${input.id}&sea=${input.season}&epi=${input.episode}`}`,
+    },
+    ({ id }) => `https://pelisplus.cloud/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://pelisplus.cloud/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
   ),
-  define(
-    latino({
+  ...latinoMovieAndTv(
+    {
       id: "cuevana3",
       title: "Cuevana3",
+      priority: 201,
+      ads: true,
+      resumable: true,
+    },
+    ({ id }) => `https://cuevana3.co/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://cuevana3.co/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
+  ),
+  ...latinoMovieAndTv(
+    {
+      id: "seriespe",
+      title: "SeriesPE",
+      priority: 202,
+      ads: true,
+      resumable: true,
+    },
+    ({ id }) => `https://seriespe.lat/embed/movie/${id}`,
+    ({ id, season, episode }) =>
+      `https://seriespe.lat/embed/series?tmdb=${id}&sea=${season}&epi=${episode}`,
+  ),
+  ...latinoMovieAndTv(
+    {
+      id: "cinecalidad",
+      title: "Cinecalidad",
       priority: 210,
       ads: true,
       resumable: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://cuevana3.co/embed/${input.season === undefined ? `movie/${movie(input)}` : `series?tmdb=${input.id}&sea=${input.season}&epi=${input.episode}`}`,
+    },
+    ({ id }) => `https://cinecalidad.mx/embed/movie/${id}`,
+    ({ id }) => `https://cinecalidad.mx/embed/movie/${id}`,
   ),
-  define(
-    latino({
-      id: "seriespe",
-      title: "SeriesPE",
-      priority: 220,
-      ads: true,
-      resumable: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://seriespe.lat/embed/${input.season === undefined ? `movie/${movie(input)}` : `series?tmdb=${input.id}&sea=${input.season}&epi=${input.episode}`}`,
-  ),
-  define(
-    latino({
-      id: "cinecalidad",
-      title: "Cinecalidad",
-      priority: 230,
-      ads: true,
-      resumable: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://cinecalidad.mx/embed/movie/${movie(input)}`,
-  ),
-  define(
-    latino({
+  ...latinoMovieAndTv(
+    {
       id: "repelis",
       title: "Repelis",
-      priority: 240,
+      priority: 211,
       ads: true,
       resumable: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://repelisplus.to/embed/movie/${movie(input)}`,
+    },
+    ({ id }) => `https://repelisplus.to/embed/movie/${id}`,
+    ({ id }) => `https://repelisplus.to/embed/movie/${id}`,
   ),
-  define(
-    latino({
+  ...latinoMovieAndTv(
+    {
       id: "seriesyonkis",
       title: "SeriesYonkis",
-      priority: 250,
+      priority: 212,
       ads: true,
       resumable: true,
-    }),
-    ["movie", "tv"],
-    (input) =>
-      `https://seriesyonkis.nu/embed/movie/${movie(input)}`,
+    },
+    ({ id }) => `https://seriesyonkis.nu/embed/movie/${id}`,
+    ({ id }) => `https://seriesyonkis.nu/embed/movie/${id}`,
   ),
 ];
 
@@ -297,9 +309,9 @@ export const toPlayer = (
   provider: ProviderDefinition,
   input: ProviderInput,
 ): PlayersProps => ({
+  providerId: provider.id,
   title: provider.title,
   source: provider.buildUrl(input),
-  providerId: provider.id,
   language: provider.language,
   idioma: provider.language,
   playbackMode: provider.playbackMode,
